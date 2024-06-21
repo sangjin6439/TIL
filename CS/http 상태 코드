@@ -1,0 +1,19 @@
+Http 상태요청   1XX -> 정보 제공 
+100 -> Continue 계속 진행하라
+
+2XX -> 성공 
+200 -> OK 성공적으로 처리됨
+201 -> Create 요청이 처리되어서 새로운 리소스가 생성되었다. 202 -> Accept 요청은 접수하였지만, 처리가 완료되지 않았다.
+204 - > No Content 처리를 성공했지만, 클라이언트에게 돌려줄 콘텐츠가 없다.  3XX -> Redirection(리다이렉션) 300 -> Multiple Choices 선택 항목이 여러 개 있다.
+301 -> Moved Permanently(영구 이동) 지정한 리소스가 새로운 URI로  이동함
+303 -> See Other(다른 위치 보기) 다른 위치로 요청하라.
+307 -> Temporary Redirect(임시 리다이렉션) 임시로 리다이렉션 요청이 필요
+
+4XX -> Client Error(클라이언트 	에러) 400 -> Bad Request(잘못된 요청) 요청의 구문이 잘못됨 401 -> Unauthorized(권한 없음) 지정한 리소스에 대한 액세스 권한이 없다 402 -> Payment Required(결제 필요) 지정한 리소스에 대한 엑세스가 금지됨
+403 -> Forbidden(금지됨) 지정한 리소스에 대한 엑세스가 금지됨 404 -> Not Found(찾을 수 없음) 지정한 리소스를 찾을 수 없다.
+
+5XX -> Server Error(서버 에러)
+500 -> Internal Server Error(내부 서버 오류) 서버에 에러가 발생
+501 -> Not Implemented(구현되지 않음) 요청한 URI의 메서드에 대해 서버가 구현하고 있음
+502 -> Bad Gateway(불량 게이트웨어) 게이트웨어 또는 프록시 역할을 하는 서버가 뒷단의 서버로부터 잘못된 응답을 받았다. 503 -> Gateway Timeout(서비스 제공불가) 현재 서버에서 서비스를 제공할 수 없다.
+504 -> Gateway Timeout(게이트 웨이 시간초과) 게이트웨이 또는 프록시 역할을 하는 서버가 그 뒷단의 서버로부터 응답을 기다리다 타임아웃이 발생한다.         
