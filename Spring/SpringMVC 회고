@@ -1,0 +1,42 @@
+초록 스터디 SpringMVC PR 피드백 내용 및 학습한 내용
+ RestApi에서는 상태코드를 변경하고 조작하기 위해  ResponseEntity를 사용하기
+
+테스트 진행 시 @DisplayName을 통해 테스트 내용이 무엇인지 알 수 있게 하기
+
+상수는 모두 대문자로 작성하는 것이 좋습니다.(컨벤션입니다.)
+
+참고로 Advice라는 용어는 AOP에서 나온 개념입니다. @ControllerAdvice는 AOP의 일종으로 볼 수 있다는 이야기죠!
+
+코드 구현시 Else의 사용을 배제하자. 해당 코드에 여러 조건이 더 붙게 된다면 코드가 지저분해지고 유지보수가 어려워진다.
+
+@PathVariable은 무엇이며 무엇을 가르키는가?
+PathVariable은 식별자의 역할을 합니다. URL에서 변수를 받아 매개변수로 사용한다.
+
+ResponseEntity는 정적 팩토리 메소드를 지원합니다. 한번 활용해보는 건 어떨까요?
+ResponseEntity는 동적, 정적 메서드를 지원한다.
+
+동적 메서드
+return new ResponseEntity<>(reservations.get(id),HttpStatus.OK)
+
+정적 메서드
+return ResponseEntity.ok(reservations.get(id));
+이런식으로 사용가능하다. 동적 메서드를 사용한다면 객체를 생성해줘야 한다는 단점이 있고 정적메서드는 클래스로 사용가능하다. 또한 정적메서드를 사용하면 코드가 더 간결해지고 명확해지는 장점이 있다.
+
+왜 새 자원을 생성할 때는 HTTP 응답 상태로 201 CREATED를 반환할까요? 또, 어째서 URI를 함께 포함해 반환하는 걸까요?
+201 코드를 응답 상태로 반환하여 새로운 자원이 생성 되었음을 명확히 알 수 있다.
+URL에 포함하여 생성된 자원의 식별자를 알 수 있어 URL에 포함하여 반환했다.
+
+
+왜 자원을 삭제하는 DELETE 메소드는 HTTP 응답 상태로 204 NO CONTENT를 반환하는 걸까요?
+200 OK도 괜찮지 않을까요?
+200 OK 상태 코드는 Body에 본문을 추가한다. 그렇기에 삭제하기 위한 delete코드에 굳이 본문을 넣어서 리소스를 낭비할 이유가 없다. 204 NO CONTENT는 본문을 넣지 않는다.
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest와 @DirtiesContext가 등장했네요! 둘을 사용해본 경험이 있나요? 아마 없을 거라고 생각합니다.
+두 어노테이션은 어떤 역할을 가지고 있을까요? 각 어노테이션의 옵션은 무슨 의미일까요?
+
+@SpringBootTest는 스프링 부트가 지원하는 기본적인 통합 테스트 환경 라이브러리다. 이는 실행 시 모든 Bean을 스캔하여 가져와서 프로젝트 규모가 커지면 시간도 느려지고 무겁고, 테스트 단위가 커서 디버깅도 어렵다.
+webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT는 테스트 시 애플리케이션에서 지정한 포트번호를 사용한다는 의미다.
+@DirtiesContext 각각의 테스트끼리 상태를 공유하지 못하게 매 테스트마다 켄텍스트를 생성시켜 상태 공유를 막는다 -> application을 매 테스트마다 다시 생성시켜서 리소스가 많이 든다는 단점이 있다.
+classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD이 옵션은 클래스의 모든 테스트를 실행하기 전에 Context를 재생성한다.
