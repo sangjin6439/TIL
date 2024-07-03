@@ -1,0 +1,5 @@
+Spring JDBC
+
+DB가 없으면 기본적으로 콘솔 애플리케이션에서 메모리에 저장한다.
+ 
+h2데이터 베이스 연동 이슈 : jdbc:h2:tcp://localhost/~/database 로 들어가면 잘 되는데 mem:database로 하면 안됨 -> 해결: H2데이터베이스는 server 와 In-Memory방식이 있다. 흔히 사용하는 server모드는 h2데이터베이스를 설치해야했고 별도의 설치 없는 In-Memoey방식은 jdbc:h2:mem:database 처럼 mem를 넣어주면(서버 작동 후 localhost:8080/h2-console을 입력하면 접속가능) 내부 메모리로 돌아가게 된다. yml파일에 별도의 username: password: 필요없다.
