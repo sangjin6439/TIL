@@ -2,4 +2,19 @@ Spring JDBC
 
 DB가 없으면 기본적으로 콘솔 애플리케이션에서 메모리에 저장한다.
  
-h2데이터 베이스 연동 이슈 : jdbc:h2:tcp://localhost/~/database 로 들어가면 잘 되는데 mem:database로 하면 안됨 -> 해결: H2데이터베이스는 server 와 In-Memory방식이 있다. 흔히 사용하는 server모드는 h2데이터베이스를 설치해야했고 별도의 설치 없는 In-Memoey방식은 jdbc:h2:mem:database 처럼 mem를 넣어주면(서버 작동 후 localhost:8080/h2-console을 입력하면 접속가능) 내부 메모리로 돌아가게 된다. yml파일에 별도의 username: password: 필요없다.
+h2데이터 베이스 연동 이슈 : jdbc:h2:tcp://localhost/~/database 로 들어가면 잘 되는데 mem:database로 하면 안됨 
+-> 해결: H2데이터베이스는 server 와 In-Memory방식이 있다. 흔히 사용하는 server모드는 h2데이터베이스를 설치해야했고 별도의 설치 없는 In-Memoey방식은 jdbc:h2:mem:database 처럼 mem를 넣어주면(서버 작동 후 localhost:8080/h2-console을 입력하면 접속가능) 내부 메모리로 돌아가게 된다. yml파일에 별도의 username: password: 필요없음.
+
+DB 테이블 CommandLineRunner를 통해 애플리케이션 실행 시 reservation 테이블이 있을 시 삭제하고 새로운 reservation 테이블을 만들게 함.
+
+데이터 생성/조회/삭제 JdbcTemplate 기술로 DB에 접근해서 생성/조회/삭제를 구현했습니다. 생성: 데이터 생성 시 insert 쿼리를 사용했고 KeyHolder를 사용해 생성된 데이터의 id 값을 객체에 반영할 수 있게 했습니다. KeyHolder를 사용하지 않고 insert를 하게 되면 DB의 id컬럼의 값을 자동으로 증가시키게 되고 해당 객체의 id 값은 알 수 없게 됨.
+“id BIGINT NOT NULL AUTO_INCREMENT”는 데이터베이스 테이블에서 id 컬럼을 자동 증가하도록 설정하는 것. 이는 데이터베이스가 새로운 레코드를 삽입할 때마다 id 값을 자동으로 증가시켜주는 역할을 합니다. 조회: select 쿼리를 통해 데이터를 불러옵니다 삭제: delete 쿼리를 통해 데이터를 삭제했습니다. 삭제하고자 하는 데이터의 id가 있다면 정상적으로 삭제되어 1을 반환하게 되고 1을 반환하지 않는다면 예외를 발생시킴.
+
+
+public Reservation findById(Long id) { return jdbcTemplate.queryForObject("select * from reservation where id = ?", new Object[]{id}, (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time"))); }
+이 코드에서 rs와 rowNum은 아래와 같이 나타냄.
+ rs (ResultSet):
+* rs는 쿼리 결과를 담고 있는 ResultSet 객체를 가리킵니다. 데이터베이스에서 반환된 행 데이터를 담고 있으며, 이 객체를 통해 특정 컬럼의 값을 추출할 수 있음.
+* 예를 들어, rs.getLong("id")는 현재 행의 "id" 컬럼 값을 가져오고, rs.getString("name")는 현재 행의 "name" 컬럼 값을 가져옴.
+rowNum (row number):
+* rowNum은 현재 처리 중인 행(row)의 인덱스를 나타내는 정수입니다. 일반적으로 0부터 시작하여 각 행을 순차적으로 증가
