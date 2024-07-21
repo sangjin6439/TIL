@@ -1,0 +1,25 @@
+레디스는 key value를 쌍으로 가지는 NoSql 데이터베이스이다. 주로 비정형 데이터들을 다루는 비관계형 데이터베이스이다. %비정형데이터: 식별가능한 구조나 아키텍쳐가 없어 구조화되지 않은 데이터 베이스% 
+
+NoSql 데이터베이스라서 sql은 사용하지 못하고  레디스에서 지원하는 자료구조들을 사용해서 데이터를 관리한다.
+
+- **Strings** : Vinary-safe한 기본적인 key-value 구조
+- **Lists** : String element의 모음, 순서는 삽입된 순서를 유지하며 기본적인 자료구로 Linked List를 사용
+- **Sets** : 유일한 값들의 모임인 자료구조, 순서는 유지되지 않음
+- **Sorted** **sets** : Sets 자료구조에 score라는 값을 추가로 두어 해당 값을 기준으로 순서를 유지
+- **Hahses** : 내부에 key-value 구조를 하나더 가지는 Reids 자료구조
+- **Bit** **arrays**(bitMaps) : bit array를 다를 수 있는 자료구조
+- **HyperLogLogs** : HyperLogLog는 집합의 원소의 개수를 추정하는 방법, Set 개선된 방법
+- **Streams** : Redis 5.0 에서 Log나 IoT 신호와 같이 지속적으로 빠르게 발생하는 데이터를 처리하기 위해서 도입된 자료구조
+
+처음에 도입할때에는 redis를 게시판 좋아요 기능에 넣으려 했다 그런데 막상 진행해 보니 빈번히 수정/삭제가 일어나는 좋아요 기능에 redis를 넣을 이유가 없던것이다. 빈번한 cachemiss가 발생해서 실제 DB에서 캐시로 데이터를 옮기고 옮긴 데이터를 보여주기 때문에 더욱 성능이 저하 된다. 그렇기 때문에 빈번한 수정이 일어나지 않는 회원정보나 리프레쉬 토큰등에 쓰이는게 좋다고 생각한다.
+
+refresh 토큰에 사용하는 이유: 인메모리 데이터베이스인 레디스에 rf토큰을 넣어서 DB의 부하를 줄이고 만약에 서버의 장애로 레디스 데이터가 다 날라갔다 해도 전체 유저 로그아웃이 최대 피해라서 사용했다. 
+
+또한 레디스에는 ttl(레디스 저장시간)이 있는데 이게 리프레쉬 토큰의 유효시간보다 같거나 조금 길어야한다. 만약 짧다면 레디스에서 토큰이 사라져서 리프레쉬 토큰 조회가 안될것이다.
+
+RefreshToken에 `@RedisHash` 을 사용해서 레디스에 저장하고 db에는 저장하지 않는다
+주의점! @id는
+
+java.persistence.id가 아닌 [opg.springframework.data.annotation.Id](http://opg.springframework.data.annotation.id/) 를 import해야 됩니다.
+
+Refresh Token은 Redis에 저장하기 때문에 JPA 의존성이 필요하지 않습니다.
