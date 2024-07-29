@@ -1,0 +1,15 @@
+구현
+토큰을 사용하여 로그인 기능
+로그인한 유저만 예약 생성 기능
+어드민 페이지 진입은 admin권한이 있는 사람만 할 수 있도록 제한 기능
+
+느낀 점
+로그인 기능 같은 경우는 SpringSercurity를 사용해서 구현해 봐서 SpringSercurity 없이 구현은 처음이었습니다.
+
+HandlerMethodArgumentResolver를 사용해 컨트롤러 진입 전 Cookie 값을 확인하여 멤버 정보를 확인했습니다.
+
+HandlerInterceptor를 사용해 �컨트롤러� 진입하기 전에 Cookie 값을 확인하여 role를 확인했습니다.
+
+고민한 점, 공부할 점
+어떻게 코드 인증(token)과 기본 로직을 분리시킬지 고민했습니다.
+SpringSecurity를 사용한 것과 어떠한 차이가 있는지 깊게 공부해야겠습니다.
